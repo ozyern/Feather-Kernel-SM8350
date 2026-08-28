@@ -1879,7 +1879,7 @@ skip_rx_check:
 	return index;
 }
 
-static int oplus_chg_wls_get_max_wireless_power(struct oplus_chg_wls *wls_dev)
+int oplus_chg_wls_get_max_wireless_power(struct oplus_chg_wls *wls_dev)
 {
 	int max_wls_power = 0;
 	int max_adapter_wls_power = 0;

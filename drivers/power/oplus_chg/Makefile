@@ -34,7 +34,9 @@ oplus_chg-obj-y += warp_ic/oplus_warp_fw.o
 oplus_chg-obj-y += wireless/wls_chg_fast.o
 oplus_chg-obj-y += wireless/wls_chg_normal.o
 oplus_chg-obj-y += wireless/wls_chg_rx.o
-
+#ifndef CONFIG_CHG_FOR_OP9_CN
+oplus_chg-obj-y += oplus_wireless.o
+#endif
 oplus_chg-objs = $(oplus_chg-obj-y)
 
 ccflags-y += -DCONFIG_OPLUS_CHG_GKI_SUPPORT -DOPLUS_CHG_REG_DUMP_ENABLE

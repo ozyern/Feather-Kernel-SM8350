@@ -195,6 +195,9 @@
 
 #define TEMPERATURE_INVALID	-2740
 
+#define chg_info(fmt, ...)                                                     \
+	printk(KERN_INFO "[OPLUS_CHG][%s]" fmt, __func__, ##__VA_ARGS__)
+
 #define chg_debug(fmt, ...) \
         printk(KERN_NOTICE "[OPLUS_CHG][%s]"fmt, __func__, ##__VA_ARGS__)
 
@@ -661,6 +664,93 @@ int oplus_chg_get_chg_strategy_data_len(struct oplus_chg_strategy_data data[],
 					int max_len);
 #endif
 
+typedef enum {
+	NO_VOOCPHY = 0,
+	ADSP_VOOCPHY,
+	AP_SINGLE_CP_VOOCPHY,
+	AP_DUAL_CP_VOOCPHY,
+	INVALID_VOOCPHY,
+} OPLUS_VOOCPHY_TYPE;
+
+typedef enum {
+	NO_VOOC = 0,
+	VOOC,
+	DUAL_BATT_50W,
+	DUAL_BATT_65W,
+	SINGLE_BATT_50W,
+	VOOCPHY_33W = 5,
+	VOOCPHY_60W,
+	DUAL_BATT_80W,
+	DUAL_BATT_100W = 8,
+	DUAL_BATT_150W,
+	POWER_BANK_66W = 12,
+	POWER_BANK_67W = 13,
+	POWER_BANK_120W = 14,
+	POWER_BANK_44W = 15,
+	DUAL_BATT_240W = 16,
+	POWER_BANK_200W = 17,
+	POWER_BANK_88W = 18,
+	POWER_BANK_55W = 19,
+	POWER_BANK_125W = 20,
+	POWER_BANK_45W = 21,
+	INVALID_WARP_PROJECT,
+} OPLUS_WARP_PROJECT_TYPE;
+
+#define PPS_PDO_MAX 7
+#define PD_PDO_VOL(pdo)           (pdo * 50)
+#define PD_PDO_CURR_MAX(pdo)      (pdo * 10)
+
+typedef union
+{
+	u32 pdo_data;
+	struct {
+		u32 max_current10ma              : 10;    /*bit [ 9: 0]*/
+		u32 voltage50mv                  : 10;    /*bit [19:10]*/
+		u32 peak_current                 : 2;    /*bit [21:20]*/
+		u32                              : 1;    /*bit [22:22]*/
+		u32 epr_mode_capable             : 1;    /*bit [23:23]*/
+		u32 unchunked_ext_msg_supported  : 1;    /*bit [24:24]*/
+		u32 dual_role_data               : 1;    /*bit [25:25]*/
+		u32 usb_comm_capable             : 1;    /*bit [26:26]*/
+		u32 unconstrained_pwer           : 1;    /*bit [27:27]*/
+		u32 usb_suspend_supported        : 1;    /*bit [28:28]*/
+		u32 dual_role_power              : 1;    /*bit [29:29]*/
+		u32 pdo_type                     : 2;    /*bit [31:30]*/
+	};
+} pd_msg_data;
+
+typedef enum
+{
+	USBPD_PDMSG_PDOTYPE_FIXED_SUPPLY,
+	USBPD_PDMSG_PDOTYPE_BATTERY,
+	USBPD_PDMSG_PDOTYPE_VARIABLE_SUPPLY,
+	USBPD_PDMSG_PDOTYPE_AUGMENTED
+} USBPD_PDMSG_PDOTYPE_TYPE;
+
+enum oplus_chg_protocol_type {
+	CHG_PROTOCOL_INVALID = -1,
+	CHG_PROTOCOL_BC12 = 0,
+	CHG_PROTOCOL_PD,
+	CHG_PROTOCOL_PPS,
+	CHG_PROTOCOL_VOOC,
+	CHG_PROTOCOL_UFCS,
+	CHG_PROTOCOL_QC,
+	CHG_PROTOCOL_MAX,
+};
+
+struct oplus_cpa_protocol_info {
+	enum oplus_chg_protocol_type type;
+	int power_mw;
+	int max_power_mw;
+};
+
+struct dec_cv_data {
+	bool dec_track;
+	int dec_vol;
+	int dec_delta;
+	int spec_dec_cv_mv;
+};
+
 struct oplus_chg_chip {
 	struct i2c_client *client;
 	struct device *dev;
@@ -908,6 +998,29 @@ struct oplus_chg_chip {
 	int disconnect_vbus;
 	int check_battery_vol_count;
 #endif
+
+	bool support_shipmode_in_chgic;
+	bool not_support_usb_btb;
+	int read_by_reg;
+
+	uint32_t protocol_supported_type;
+	uint32_t default_protocol_type;
+	struct oplus_cpa_protocol_info protocol_prio_table[CHG_PROTOCOL_MAX];
+
+	bool support_hot_enter_kpoc;
+	bool usbtemp_high_temp_scheme;
+	int poweroff_high_batt_temp;
+	int poweroff_emergency_batt_temp;
+	int usbtemp_batt_temp_over_hot;
+	int usbtemp_temp_gap_with_batt_temp_in_over_hot;
+	bool anti_expansion_warning;
+	bool anti_expansion_error;
+	bool abnormal_disconnect_keep_connect;
+	int usb_port_ntc_pullup;
+	int pre_chg_up_limit_mmi_val;
+	struct dec_cv_data dec_cv;
+	bool dec_spec_support;
+	int adapter_power;
 };
 
 
@@ -1133,4 +1246,12 @@ void oplus_chg_update_float_voltage_by_fastchg(bool fastchg_en);
 void oplus_check_ovp_status(struct oplus_chg_chip *chg);
 #endif
 
+int oplus_get_adapter_power(void);
+int oplus_get_project_power(void);
+#ifndef CONFIG_CHG_FOR_OP9_CN
+bool oplus_chg_is_wls_present(struct oplus_chg_chip *chip);
+bool oplus_chg_is_wls_online(struct oplus_chg_chip *chip);
+#endif
+int oplus_set_chg_up_limit(int charge_limit_enable, int charge_limit_value,
+int is_force_set_charge_limit, int charge_limit_recharge_value, int callname);
 #endif /*_OPLUS_CHARGER_H_*/

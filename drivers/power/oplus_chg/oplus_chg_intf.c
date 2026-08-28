@@ -1322,6 +1322,7 @@ static enum oplus_chg_mod_property oplus_chg_intf_batt_props[] = {
 	OPLUS_CHG_PROP_VOOCCHG_ING,
 	OPLUS_CHG_PROP_SHIP_MODE,
 	OPLUS_CHG_PROP_CHARGE_NOW,
+	OPLUS_CHG_PROP_DESIGN_CAPACITY,
 #endif /* CONFIG_OPLUS_CHG_OOS */
 };
 
@@ -1398,7 +1399,10 @@ static int oplus_chg_intf_batt_get_prop(struct oplus_chg_mod *ocm,
 	bool wls_online = false;
 	bool usb_online = false;
 	int rc = 0;
-
+	int batt_fcc = 0;
+	int batt_design_capacity = 0; 
+	int battery_soh = 0;
+	
 	if (!chip) {
 		// pr_err("oplus chip is NULL\n");
 		return -ENODEV;
@@ -1439,6 +1443,9 @@ static int oplus_chg_intf_batt_get_prop(struct oplus_chg_mod *ocm,
 				pval->intval = chip->prop_status;
 			}
 		}
+		break;
+	case OPLUS_CHG_PROP_DESIGN_CAPACITY:
+		pval->intval = chip->batt_capacity_mah;
 		break;
 	case OPLUS_CHG_PROP_PRESENT:
 		pval->intval = chip->batt_exist;
@@ -1635,7 +1642,10 @@ static int oplus_chg_intf_batt_get_prop(struct oplus_chg_mod *ocm,
 		pval->intval = chip->batt_rm;
 		break;
 	case OPLUS_CHG_PROP_BATTERY_SOH:
-		pval->intval = chip->batt_soh;
+		batt_fcc = chip->batt_fcc;
+		batt_design_capacity = chip->batt_capacity_mah;
+		battery_soh = (batt_fcc * 100) / batt_design_capacity;
+		pval->intval = battery_soh;
 		break;
 #ifdef CONFIG_OPLUS_CALL_MODE_SUPPORT
 	case OPLUS_CHG_PROP_CALL_MODE:

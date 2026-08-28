@@ -503,7 +503,7 @@ int oplus_wpc_get_adapter_type(void);
 
 void oplus_wpc_print_log(void);
 
- 
- 
+int oplus_wpc_get_online_status(void);
+
 #endif	/* OPLUS_WPC_H */
     

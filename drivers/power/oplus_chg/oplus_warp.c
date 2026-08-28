@@ -73,25 +73,50 @@ static int oplus_chg_swarp_curr_table[CURR_LIMIT_MAX] = {2500, 2000, 3000, 4000,
 static int oplus_chg_warp_curr_table[CURR_LIMIT_MAX] = {3600, 2500, 3000, 4000, 5000, 6000};
 
 static struct oplus_adapter_struct adapter_id_table[] = {
-	{ 0x11, 0x11, 25, 50, ADAPTER_TYPE_AC,      CHARGER_TYPE_SWARP },
-	{ 0x12, 0x12, 25, 50, ADAPTER_TYPE_AC,      CHARGER_TYPE_SWARP },
-	{ 0x13, 0x13, 20, 0,  ADAPTER_TYPE_AC,      CHARGER_TYPE_WARP },
-	{ 0x14, 0x14, 30, 65, ADAPTER_TYPE_AC,      CHARGER_TYPE_SWARP },
-	{ 0x19, 0x19, 30, 0,  ADAPTER_TYPE_AC,      CHARGER_TYPE_WARP },
-	{ 0x21, 0x21, 25, 50, ADAPTER_TYPE_CAR,     CHARGER_TYPE_SWARP },
-	{ 0x29, 0x29, 30, 0,  ADAPTER_TYPE_CAR,     CHARGER_TYPE_WARP },
-	{ 0x31, 0x31, 25, 50, ADAPTER_TYPE_PB,      CHARGER_TYPE_SWARP },
-	{ 0x32, 0x32, 0,  0,  ADAPTER_TYPE_PB,      CHARGER_TYPE_UNKNOWN },
-	{ 0x33, 0x33, 25, 50, ADAPTER_TYPE_PB,      CHARGER_TYPE_SWARP },
-	{ 0x34, 0x34, 20, 20, ADAPTER_TYPE_PB,      CHARGER_TYPE_NORMAL },
-	{ 0x35, 0x35, 0,  0,  ADAPTER_TYPE_PB,      CHARGER_TYPE_NORMAL },
-	{ 0x36, 0x36, 0,  0,  ADAPTER_TYPE_PB,      CHARGER_TYPE_NORMAL },
-	{ 0x41, 0x41, 30, 0,  ADAPTER_TYPE_AC,      CHARGER_TYPE_WARP },
-	{ 0x42, 0x46, 0,  0,  ADAPTER_TYPE_UNKNOWN, CHARGER_TYPE_WARP },
-	{ 0x49, 0x4e, 0,  0,  ADAPTER_TYPE_UNKNOWN, CHARGER_TYPE_WARP },
-	{ 0x62, 0x66, 0,  0,  ADAPTER_TYPE_UNKNOWN, CHARGER_TYPE_SWARP },
-	{ 0x61, 0x61, 30, 65, ADAPTER_TYPE_AC,      CHARGER_TYPE_SWARP },
-	{ 0x69, 0x6e, 0,  0,  ADAPTER_TYPE_UNKNOWN, CHARGER_TYPE_SWARP },
+	{ 0x1,  0x1,  20,   0, ADAPTER_TYPE_AC,  CHARGER_TYPE_WARP },
+	{ 0x11, 0x12, 30,  50, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x13, 0x13, 20,   0, ADAPTER_TYPE_AC,  CHARGER_TYPE_WARP },
+	{ 0x14, 0x14, 30,  65, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x15, 0x16, 20,   0, ADAPTER_TYPE_AC,  CHARGER_TYPE_WARP },
+	{ 0x17, 0x19, 30,   0, ADAPTER_TYPE_AC,  CHARGER_TYPE_WARP },
+	{ 0x1a, 0x1b, 15,  33, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x1c, 0x1c, 22,  45, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x1d, 0x1e, 22,  44, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x21, 0x21, 30,  50, ADAPTER_TYPE_CAR, CHARGER_TYPE_SWARP },
+	{ 0x22, 0x22, 22,  44, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x23, 0x23, 30,  50, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x24, 0x27, 30,  55, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x28, 0x28, 30,  65, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x29, 0x29, 30,   0, ADAPTER_TYPE_CAR, CHARGER_TYPE_WARP },
+	{ 0x2a, 0x2a, 30,  65, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x2b, 0x2b, 30,  66, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x2c, 0x2e, 30,  67, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x31, 0x31, 30,  50, ADAPTER_TYPE_PB,  CHARGER_TYPE_SWARP },
+	{ 0x32, 0x32, 30, 120, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x33, 0x33, 30,  50, ADAPTER_TYPE_PB,  CHARGER_TYPE_SWARP },
+	{ 0x34, 0x34, 20,  20, ADAPTER_TYPE_PB,  CHARGER_TYPE_WARP },
+	{ 0x35, 0x35, 30,  65, ADAPTER_TYPE_PB,  CHARGER_TYPE_SWARP },
+	{ 0x36, 0x36, 30,  66, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x37, 0x3a, 30,  88, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x3b, 0x3e, 30, 100, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x41, 0x44, 30,   0, ADAPTER_TYPE_AC,  CHARGER_TYPE_WARP },
+	{ 0x45, 0x45, 20,   0, ADAPTER_TYPE_AC,  CHARGER_TYPE_WARP },
+	{ 0x46, 0x46, 30,   0, ADAPTER_TYPE_AC,  CHARGER_TYPE_WARP },
+	{ 0x47, 0x48, 30, 120, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x49, 0x4a, 15,  33, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x4b, 0x4e, 30,  80, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x51, 0x51, 30, 125, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x61, 0x61, 15,  33, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x62, 0x62, 30,  50, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x63, 0x63, 30,  65, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x64, 0x64, 30,  66, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x65, 0x65, 30,  80, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x66, 0x66, 30,  65, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x67, 0x68, 30, 125, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x69, 0x6a, 30, 100, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x6b, 0x6b, 30, 120, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x6c, 0x6d, 30,  67, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
+	{ 0x6e, 0x6e, 30,  65, ADAPTER_TYPE_AC,  CHARGER_TYPE_SWARP },
 	{ },
 };
 
@@ -2167,6 +2192,84 @@ void oplus_warp_set_fastchg_to_normal_false(void)
 		g_warp_chip->fastchg_to_normal = false;
 	}
 }
+
+int oplus_get_warp_adapter_power(int id)
+{
+	struct oplus_adapter_struct *adapter_info;
+	enum oplus_adapter_chg_type adapter_chg_type;
+	int i = 0;
+	int power = 0;
+
+	chg_info("oplus_get_warp_adapter_power: input adapter id = 0x%08x\n", id);
+
+	for (i = 0; i < ARRAY_SIZE(adapter_id_table); i++) {
+		adapter_info = &adapter_id_table[i];
+
+		if (adapter_info->id_min > adapter_info->id_max) {
+			chg_info("skip invalid range: id_min = 0x%08x, id_max = 0x%08x\n",
+			         adapter_info->id_min, adapter_info->id_max);
+			continue;
+		}
+
+		//chg_info("checking adapter[%d]: id_min = 0x%08x, id_max = 0x%08x\n",
+		//         i, adapter_info->id_min, adapter_info->id_max);
+
+		if (id >= adapter_info->id_min && id <= adapter_info->id_max) {
+			adapter_chg_type = adapter_info->adapter_chg_type;
+
+			switch (adapter_chg_type) {
+			case CHARGER_TYPE_UNKNOWN:
+				power = 0;
+				//chg_info("matched adapter[%d], type = UNKNOWN, power = %d\n", i, power);
+				break;
+			case CHARGER_TYPE_NORMAL:
+				power = 0;
+				//chg_info("matched adapter[%d], type = NORMAL, power = %d\n", i, power);
+				break;
+			case CHARGER_TYPE_WARP:
+				power = adapter_info->power_warp;
+				//chg_info("matched adapter[%d], type = WARP, power = %d\n", i, power);
+				break;
+			case CHARGER_TYPE_SWARP:
+				power = adapter_info->power_swarp;
+				//chg_info("matched adapter[%d], type = SWARP, power = %d\n", i, power);
+				break;
+			default:
+				power = 0;
+				//chg_info("matched adapter[%d], unknown type = %d, set power = 0\n", i, adapter_chg_type);
+				break;
+			}
+
+			return power;
+		}
+	}
+
+	chg_err("oplus_get_warp_adapter_power: unsupported adapter ID = 0x%08x\n", id);
+	return 0;
+}
+
+
+int oplus_get_warp_adapter_type(int id)
+{
+	struct oplus_adapter_struct *adapter_info;
+	int i = 0;
+	int adapter_type = CHARGER_TYPE_UNKNOWN;
+
+	for (i = 0; i < ARRAY_SIZE(adapter_id_table); i++) {
+		adapter_info = &adapter_id_table[i];
+		if (adapter_info->id_min > adapter_info->id_max)
+			continue;
+		if (id >= adapter_info->id_min && id <= adapter_info->id_max) {
+			adapter_type = adapter_info->adapter_chg_type;
+			chg_info("adapter_type = %d\n", adapter_type);
+			return adapter_type;
+		}
+	}
+
+	chg_err("unsupported adapter ID\n");
+	return CHARGER_TYPE_UNKNOWN;
+}
+
 
 #ifdef OPLUS_CHG_OP_DEF
 bool oplus_warp_get_ffc_chg_start(void)

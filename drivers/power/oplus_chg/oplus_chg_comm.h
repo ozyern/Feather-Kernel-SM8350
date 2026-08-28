@@ -111,4 +111,10 @@ bool oplus_chg_comm_batt_vol_over_cl_thr(struct oplus_chg_mod *comm_ocm);
 int oplus_chg_comm_get_batt_health(struct oplus_chg_mod *comm_ocm);
 int oplus_chg_comm_get_batt_status(struct oplus_chg_mod *comm_ocm);
 
+int oplus_chg_comm_get_prop(struct oplus_chg_mod *ocm,
+			enum oplus_chg_mod_property prop,
+			union oplus_chg_mod_propval *pval);
+int oplus_chg_comm_set_prop(struct oplus_chg_mod *ocm,
+			enum oplus_chg_mod_property prop,
+			const union oplus_chg_mod_propval *pval);
 #endif

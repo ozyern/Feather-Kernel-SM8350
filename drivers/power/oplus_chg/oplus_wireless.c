@@ -31,6 +31,17 @@
 #include "oplus_wireless.h"
 
 static struct oplus_wpc_chip *g_wpc_chip = NULL;
+int oplus_wpc_get_online_status(void)
+{
+	if (!g_wpc_chip) {
+		return 0;
+	}
+
+	if (g_wpc_chip->wpc_ops && g_wpc_chip->wpc_ops->wpc_get_online_status)
+		return g_wpc_chip->wpc_ops->wpc_get_online_status();
+	else
+		return 0;
+}
 
 void oplus_wpc_set_otg_en_val(int value)
 {
