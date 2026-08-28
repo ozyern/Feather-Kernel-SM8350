@@ -41,6 +41,7 @@ This kernel is not written from scratch. It is twenty years of other people's wo
 - **[simonpunk / susfs4ksu](https://gitlab.com/simonpunk/susfs4ksu)** and **sidex15** — SusFS.
 - **[JackA1ltman / NonGKI_Kernel_Build_2nd](https://github.com/JackA1ltman/NonGKI_Kernel_Build_2nd)** — the SusFS 2.2.0 → 5.4 backport patch.
 - **[osm0sis](https://github.com/osm0sis/AnyKernel3)** — AnyKernel3.
+- ****Sabrina Carpenter**-Mommy's blessings
 
 ## License
 
