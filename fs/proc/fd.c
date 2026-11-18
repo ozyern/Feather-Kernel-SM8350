@@ -12,10 +12,21 @@
 #include <linux/fs.h>
 
 #include <linux/proc_fs.h>
+#ifdef CONFIG_KSU_SUSFS
+#include <linux/susfs_def.h>
+#endif // #ifdef CONFIG_KSU_SUSFS
 
 #include "../mount.h"
 #include "internal.h"
 #include "fd.h"
+
+#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
+extern int susfs_get_non_sus_mnt_id_from_mnt(struct mount *orig_mnt);
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
+#ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
+extern bool susfs_is_inode_sus_kstat(struct inode *inode, bool *out_is_fuse);
+extern void susfs_sus_kstat_spoof_proc_fd_seq_show(int *out_target_mnt_id, unsigned long *out_target_ino, dev_t target_dev);
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
 
 static int seq_show(struct seq_file *m, void *v)
 {
@@ -53,10 +64,45 @@ static int seq_show(struct seq_file *m, void *v)
 	if (ret)
 		return ret;
 
+	/*
+	 * 5.4 port: fdinfo has no "ino:" line before 5.14, so the spoofed
+	 * output keeps the native 5.4 format (pos/flags/mnt_id only).
+	 */
+#ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
+	if (susfs_is_current_app_uid()) {
+		struct inode *inode = file_inode(file);
+		bool is_fuse = false;
+		if (susfs_is_inode_sus_kstat(inode, &is_fuse)) {
+			int mnt_id = real_mount(file->f_path.mnt)->mnt_id;
+			unsigned long ino = inode->i_ino;
+			susfs_sus_kstat_spoof_proc_fd_seq_show(&mnt_id, &ino, inode->i_sb->s_dev);
+			seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
+					(long long)file->f_pos, f_flags,
+					mnt_id);
+			goto bypass_orig_flow;
+		}
+	}
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_KSTAT
+
+#ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
+	if (likely(susfs_is_current_proc_umounted())) {
+		struct mount *mnt = real_mount(file->f_path.mnt);
+		if (mnt->mnt_id >= DEFAULT_KSU_MNT_ID) {
+			seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
+					(long long)file->f_pos, f_flags,
+					susfs_get_non_sus_mnt_id_from_mnt(mnt));
+			goto bypass_orig_flow;
+		}
+	}
+#endif // #ifdef CONFIG_KSU_SUSFS_SUS_MOUNT
+
 	seq_printf(m, "pos:\t%lli\nflags:\t0%o\nmnt_id:\t%i\n",
 		   (long long)file->f_pos, f_flags,
 		   real_mount(file->f_path.mnt)->mnt_id);
 
+#if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_SUS_KSTAT)
+bypass_orig_flow:
+#endif // #if defined(CONFIG_KSU_SUSFS_SUS_MOUNT) || defined(CONFIG_KSU_SUSFS_SUS_KSTAT)
 	show_fd_locks(m, file, files);
 	if (seq_has_overflowed(m))
 		goto out;

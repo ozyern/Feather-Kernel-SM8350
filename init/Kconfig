@@ -137,6 +137,15 @@ config LOCALVERSION
 	  object and source tree, in that order.  Your total string can
 	  be a maximum of 64 characters.
 
+config ANDROID_BPF_UNAME_COMPAT
+	bool "Report a 5.10 kernel release to Android's BPF loaders"
+	default y
+	help
+	  Make uname() return "5.10.240" to bpfloader, netbpfload, netd and
+	  uprobestatsbpfl so newer Android BPF programs load on this 5.4 kernel.
+	  Pedestrian's Android 16 build turns this off; it is the suspected
+	  cause of a boot-logo hang on Android 16 ROMs. Say N for those.
+
 config LOCALVERSION_AUTO
 	bool "Automatically append version information to the version string"
 	default y

@@ -4,8 +4,24 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 
+#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
+extern struct static_key_false susfs_is_fake_cmdline_or_bootconfig_buffer_set;
+extern void susfs_spoof_cmdline_or_bootconfig(struct seq_file *m);
+#endif
+
 static int cmdline_proc_show(struct seq_file *m, void *v)
 {
+#ifdef CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG
+	/*
+	 * Feather-Kernel: this is a non-GKI 5.4 kernel, so the bootloader's
+	 * androidboot.* flags land in /proc/cmdline rather than /proc/bootconfig.
+	 * The fake buffer is printed verbatim (supply the full file contents).
+	 */
+	if (static_branch_unlikely(&susfs_is_fake_cmdline_or_bootconfig_buffer_set)) {
+		susfs_spoof_cmdline_or_bootconfig(m);
+		return 0;
+	}
+#endif
 	seq_puts(m, saved_command_line);
 	seq_putc(m, '\n');
 	return 0;
