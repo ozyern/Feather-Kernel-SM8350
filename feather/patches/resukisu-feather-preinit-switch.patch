@@ -1,0 +1,27 @@
+diff --git a/kernel/tools/code_generation/preinit_runner/preinit_runner.mk b/kernel/tools/code_generation/preinit_runner/preinit_runner.mk
+index 994a2a3c..6c1ae7aa 100644
+--- a/kernel/tools/code_generation/preinit_runner/preinit_runner.mk
++++ b/kernel/tools/code_generation/preinit_runner/preinit_runner.mk
+@@ -9,6 +9,13 @@ KSU_HEADERS_INSTALL_OUTPUT := $(shell $(MAKE) -s -f $(srctree)/Makefile \
+ 	INSTALL_HDR_PATH="$(abspath $(objtree))/usr")
+ endif
+ 
++# Feather-Kernel: KCFLAGS=-DKSU_NO_PREINIT turns preinit off kernel-wide
++# (fs/exec.c's SUSFS hook honours the same macro), so skip the runner too.
++ifneq ($(findstring KSU_NO_PREINIT,$(KCFLAGS)),)
++KSU_FEATHER_NO_PREINIT := 1
++endif
++
++ifeq ($(KSU_FEATHER_NO_PREINIT)$(wildcard $(KSU_UAPI_INC)/linux/unistd.h),$(wildcard $(KSU_UAPI_INC)/linux/unistd.h))
+ ifneq ($(wildcard $(KSU_UAPI_INC)/linux/unistd.h),)
+ kernelsu-objs += preinit/preinit.o
+ kernelsu-objs += preinit/blob.o
+@@ -50,4 +57,8 @@ else
+ $(warning -- $(REPO_NAME): $(KSU_UAPI_INC) not found, preinit disabled)
+ ccflags-y += -DKSU_NO_PREINIT
+ endif
++else
++$(info -- $(REPO_NAME): preinit disabled by Feather-Kernel build option)
++ccflags-y += -DKSU_NO_PREINIT
++endif
+ 
