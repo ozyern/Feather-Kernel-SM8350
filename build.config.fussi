@@ -1,0 +1,10 @@
+#
+# OnePlus 9/9 Pro specific config
+#
+KERNEL_DIR=kernel/msm-5.4
+
+export BRAND_SHOW_FLAG=oneplus
+DTB_DIR=vendor/oplus/fussi
+
+# Source lahaina build config
+. ${KERNEL_DIR}/build.config.msm.lahaina
