@@ -13,6 +13,10 @@
 #   FEATHER_PREINIT=1  enable ReSukiSU's "preinit" runner (off: not in the
 #                      known-good build, and untested on this kernel)
 #   FEATHER_NOKSU=1    control build without KernelSU/SUSFS
+#   FEATHER_A17=1      Android 17 ROMs: report 5.10.240 to the BPF loaders
+#                      (A17's netbpfload refuses kernels < 5.10 and init
+#                      reboots with "bpfloader-failed"). Leave off for A16,
+#                      where it hangs at the boot logo.
 set -euo pipefail
 
 K="$(cd "$(dirname "$0")/.." && pwd)"
@@ -64,7 +68,17 @@ make "${ARGS[@]}" vendor/feather_defconfig
 
 # Guard rails: settings that differ from the known-good Android 16 kernel.
 grep -q '^CONFIG_COMPAT_VDSO=y' "$OUT/.config" && { echo "!! COMPAT_VDSO is on (known-good build has none)"; exit 1; }
-grep -q '^CONFIG_ANDROID_BPF_UNAME_COMPAT=y' "$OUT/.config" && { echo "!! BPF uname compat is on (hangs Android 16 at the boot logo)"; exit 1; }
+if [ "${FEATHER_A17:-0}" = 1 ]; then
+	"$K/scripts/config" --file "$OUT/.config" -e ANDROID_BPF_UNAME_COMPAT
+	make "${ARGS[@]}" olddefconfig
+	grep -q '^CONFIG_ANDROID_BPF_UNAME_COMPAT=y' "$OUT/.config" || { echo "!! FEATHER_A17=1 but BPF uname compat is off"; exit 1; }
+	echo "Android 17 build: BPF loaders see 5.10.240"
+else
+	grep -q '^CONFIG_ANDROID_BPF_UNAME_COMPAT=y' "$OUT/.config" && { echo "!! BPF uname compat is on (hangs Android 16 at the boot logo)"; exit 1; }
+fi
+for opt in TCP_CONG_BBR DEFAULT_BBR WQ_POWER_EFFICIENT_DEFAULT; do
+	grep -q "^CONFIG_${opt}=y" "$OUT/.config" || { echo "!! CONFIG_${opt} dropped by olddefconfig"; exit 1; }
+done
 
 if [ "${FEATHER_NOKSU:-0}" = 1 ]; then
 	"$K/scripts/config" --file "$OUT/.config" -d KSU

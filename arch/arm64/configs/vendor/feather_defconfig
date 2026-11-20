@@ -531,7 +531,6 @@ CONFIG_PM=y
 # CONFIG_PM_DEBUG is not set
 CONFIG_PM_CLK=y
 CONFIG_PM_GENERIC_DOMAINS=y
-# CONFIG_WQ_POWER_EFFICIENT_DEFAULT is not set
 CONFIG_PM_GENERIC_DOMAINS_SLEEP=y
 CONFIG_PM_GENERIC_DOMAINS_OF=y
 CONFIG_CPU_PM=y
@@ -1016,9 +1015,6 @@ CONFIG_INET_TCP_DIAG=y
 CONFIG_INET_UDP_DIAG=y
 # CONFIG_INET_RAW_DIAG is not set
 CONFIG_INET_DIAG_DESTROY=y
-# CONFIG_TCP_CONG_ADVANCED is not set
-CONFIG_TCP_CONG_CUBIC=y
-CONFIG_DEFAULT_TCP_CONG="cubic"
 # CONFIG_TCP_MD5SIG is not set
 CONFIG_IPV6=y
 CONFIG_IPV6_ROUTER_PREF=y
@@ -7215,3 +7211,17 @@ CONFIG_KSU_SUSFS_SUS_MAP=y
 
 # Android 16 ROMs (matches Pedestrian-A16)
 # CONFIG_ANDROID_BPF_UNAME_COMPAT is not set
+
+# ---- Feather-Kernel: low-risk efficiency ----
+# TCP BBR as default congestion control (better throughput/latency on lossy
+# mobile and Wi-Fi links); CUBIC stays available.
+CONFIG_TCP_CONG_ADVANCED=y
+CONFIG_TCP_CONG_CUBIC=y
+CONFIG_TCP_CONG_BBR=y
+# CONFIG_TCP_CONG_BIC is not set
+# CONFIG_TCP_CONG_WESTWOOD is not set
+# CONFIG_TCP_CONG_HTCP is not set
+CONFIG_DEFAULT_BBR=y
+CONFIG_DEFAULT_TCP_CONG="bbr"
+# Run unbound-able kernel work on already-awake CPUs (as in Google's GKI).
+CONFIG_WQ_POWER_EFFICIENT_DEFAULT=y
