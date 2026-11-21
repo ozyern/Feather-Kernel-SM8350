@@ -4,7 +4,7 @@
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=Feather-Kernel | OnePlus 9 / 9 Pro BPF | ReSukiSU + SUSFS v2.4.0 | Base by BRUCE (toraidl)
+kernel.string=Feather-Kernel 1.5 | SM8350 Snapdragon 888 (lahaina) | OnePlus 9 / 9 Pro BPF | ReSukiSU + SUSFS v2.4.0 | Base by BRUCE (toraidl)
 do.devicecheck=1
 do.modules=0
 do.systemless=1

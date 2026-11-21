@@ -2,7 +2,8 @@
 # Package the built Image into an AnyKernel3 flashable zip, and optionally a
 # boot.img when given a stock boot image to take the header/ramdisk from:
 #   feather/package.sh [stock-boot.img]
-# Environment: FEATHER_WS, FEATHER_OUT (as build.sh), FEATHER_TAG (name suffix),
+# Environment: FEATHER_WS, FEATHER_OUT (as build.sh), FEATHER_VERSION (default 1.5),
+#              FEATHER_TAG (name suffix),
 #              FEATHER_DIST (output dir, default $FEATHER_WS/dist)
 set -euo pipefail
 K="$(cd "$(dirname "$0")/.." && pwd)"
@@ -13,7 +14,9 @@ IMG="$OUT/arch/arm64/boot/Image"
 [ -f "$IMG" ] || { echo "no Image, run feather/build.sh first"; exit 1; }
 
 VER=$(strings "$IMG" | grep -o -m1 "Linux version 5[^ ]*" | cut -d" " -f3 || true)
-NAME="Feather_OP9_${VER}${FEATHER_TAG:+_$FEATHER_TAG}_$(date +%Y%m%d-%H%M)"
+# e.g. Feather-Kernel-1.5_SM8350-SD888-lahaina_OP9-9Pro_5.4.254
+FEATHER_VERSION="${FEATHER_VERSION:-1.5}"
+NAME="Feather-Kernel-${FEATHER_VERSION}_SM8350-SD888-lahaina_OP9-9Pro_${VER%-Feather}${FEATHER_TAG:+_$FEATHER_TAG}"
 mkdir -p "$DIST"
 
 python3 -I - "$K/feather/anykernel3" "$IMG" "$DIST/$NAME.zip" "$VER" <<'PY'
