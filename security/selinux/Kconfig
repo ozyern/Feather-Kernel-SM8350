@@ -97,3 +97,12 @@ config SECURITY_SELINUX_SIDTAB_HASH_BITS
 	  collisions may be viewed at /sys/fs/selinux/ss/sidtab_hash_stats. If
 	  chain lengths are high (e.g. > 20) then selecting a higher value here
 	  will ensure that lookups times are short and stable.
+
+config FEATHER_FORCE_PERMISSIVE
+	bool "Feather-Kernel debug: keep SELinux permissive"
+	depends on SECURITY_SELINUX_DEVELOP
+	default n
+	help
+	  Ignore requests to switch SELinux to enforcing, so user-build ROMs
+	  (which ignore androidboot.selinux=permissive) stay permissive.
+	  Debug builds only. Never enable this in a release.
