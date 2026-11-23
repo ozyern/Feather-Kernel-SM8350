@@ -6092,6 +6092,29 @@ bpf_base_func_proto(enum bpf_func_id func_id)
 	}
 }
 
+/* Backport of bpf_get_netns_cookie() (5.7) for cgroup sock programs.
+ * Android 17's netd inet_create program compares the socket's netns cookie
+ * with the one of init_net (ctx == NULL). 5.4 has no net->net_cookie, so use
+ * the netns inode number: it is unique per live namespace, which is all the
+ * comparison needs.
+ */
+static u64 __bpf_get_netns_cookie(struct sock *sk)
+{
+	return (sk ? sock_net(sk) : &init_net)->ns.inum;
+}
+
+BPF_CALL_1(bpf_get_netns_cookie_sock, struct sock *, ctx)
+{
+	return __bpf_get_netns_cookie(ctx);
+}
+
+static const struct bpf_func_proto bpf_get_netns_cookie_sock_proto = {
+	.func		= bpf_get_netns_cookie_sock,
+	.gpl_only	= false,
+	.ret_type	= RET_INTEGER,
+	.arg1_type	= ARG_PTR_TO_CTX_OR_NULL,
+};
+
 static const struct bpf_func_proto *
 sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
 {
@@ -6107,6 +6130,11 @@ sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
 		return &bpf_get_socket_cookie_sock_proto;
 	case BPF_FUNC_sk_storage_get:
 		return &bpf_sk_storage_get_cg_sock_proto;
+	case BPF_FUNC_get_netns_cookie:
+		return &bpf_get_netns_cookie_sock_proto;
+	/* inet_create runs in the creating task's context */
+	case BPF_FUNC_get_current_pid_tgid:
+		return &bpf_get_current_pid_tgid_proto;
 	default:
 		return bpf_base_func_proto(func_id);
 	}

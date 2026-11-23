@@ -223,6 +223,7 @@ enum bpf_arg_type {
 	ARG_PTR_TO_ALLOC_MEM,	/* pointer to dynamically allocated memory */
 	ARG_PTR_TO_ALLOC_MEM_OR_NULL,	/* pointer to allocated memory or NULL */
 	ARG_CONST_ALLOC_SIZE_OR_ZERO,	/* constant size of allocated memory */
+	ARG_PTR_TO_CTX_OR_NULL,	/* pointer to context or NULL (backport from 5.7) */
 };
 
 /* type of values returned from helper functions */
